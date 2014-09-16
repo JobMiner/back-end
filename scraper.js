@@ -1,4 +1,7 @@
 var casper = require('casper').create({
+    clientScripts: [
+        "lib/jquery.js"
+    ],
     logLevel: "debug",
     verbose: true
 });
@@ -24,6 +27,30 @@ casper.then(function() {
         "#userid": username,
         "#pwd": password
     }, true);
+});
+
+casper.then(function() {
+    var url = this.evaluate(function() {
+        return $("a:contains('Job Inquiry')").attr("href");
+    });
+
+    this.log(url);
+
+    this.open(url);
+});
+
+casper.then(function() {
+    var url = this.evaluate(function() {
+        return $("#ptifrmtgtframe").attr("src");
+    });
+
+    this.open(url);
+});
+
+casper.thenClick("input[value='Search']");
+
+casper.waitWhileVisible("div img#processing", function() {
+    this.capture("search2.png");
 });
 
 casper.run();
