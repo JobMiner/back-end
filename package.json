@@ -1,0 +1,12 @@
+{
+    "name": "JobMiner",
+    "version": "0.0.0",
+    "description": "A JobMine enhancement tool",
+    "dependencies": {
+        "keychain": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/JobMiner"
+    }
+}
