@@ -1,7 +1,5 @@
 var casper = require('casper').create({
-    clientScripts: [
-        "lib/jquery.js"
-    ],
+    clientScripts: ["lib/jquery.js"],
     logLevel: "debug",
     verbose: true
 });
@@ -10,7 +8,9 @@ var keychain = require("keychain");
 var username = "hjaveed";
 var password;
 
+// go to the login page
 casper.start('https://jobmine.ccol.uwaterloo.ca/psp/SS/?cmd=login', function() {
+    // TODO: currently a really bad way to set the password, will improve later
     this.wait(1000);
 
     keychain.getPassword({
@@ -22,7 +22,11 @@ casper.start('https://jobmine.ccol.uwaterloo.ca/psp/SS/?cmd=login', function() {
     });
 });
 
+// login to JobMine
 casper.then(function() {
+    if (!password) return fail("Password was not set properly");
+    if (!/Password:/.test(casper.getHTML())) return fail("Expected to be on login page");
+
     this.fillSelectors("#login", {
         "#userid": username,
         "#pwd": password
@@ -30,28 +34,13 @@ casper.then(function() {
 });
 
 casper.then(function() {
-    var url = this.evaluate(function() {
-        return $("a:contains('Job Inquiry')").attr("href");
-    });
-
-    this.log(url);
-
-    this.open(url);
-});
-
-casper.then(function() {
-    var url = this.evaluate(function() {
-        return $("#ptifrmtgtframe").attr("src");
-    });
-
-    this.open(url);
-});
-
-casper.thenClick("input[value='Search']");
-
-casper.waitWhileVisible("div img#processing", function() {
-    this.capture("search2.png");
+    // ready to go to descriptions
 });
 
 casper.run();
+
+function fail(message) {
+    casper.log(message, "error");
+    casper.exit();
+}
 
