@@ -58,6 +58,8 @@ casper.then(function() {
 });
 
 casper.then(function() {
+    if (/Invalid signon time/.test(casper.getHTML())) return fail("Can't sign on after 12");
+
     // ready to go to descriptions
     this.log("Processing " + jobs.length + " jobs", "info");
 
