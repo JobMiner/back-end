@@ -7,13 +7,15 @@ var keychain = require("keychain");
 var fs = require("fs");
 var async = require("async");
 
-var username = "hjaveed";
+var username;
 var password;
 
 // go to the login page
 casper.start('https://jobmine.ccol.uwaterloo.ca/psp/SS/?cmd=login', function() {
     // TODO: currently a really bad way to set the password, will improve later
     this.wait(1000);
+
+    username = fs.read("username").trim();
 
     keychain.getPassword({
         account: username,
