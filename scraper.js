@@ -9,13 +9,33 @@ var async = require("async");
 
 var username;
 var password;
+var jobs = [];
+
+var rawJobs = fs.read("jobs.xls");
+var rawJobArray = rawJobs.split("\n");
+
+var reg = /<tr>((?:\n<td>.*?<\/td>){10})/g;
+var tempObj;
+while ((tempObj =reg.exec(rawJobs)) !== null) {
+    tempObj = tempObj[0].replace(/<td>/g, '').replace(/<\/td>/g, '').split("\n");
+
+    var job = {
+        id: tempObj[1],
+        jobTitle: tempObj[2],
+        employer: tempObj[3],
+        location: tempObj[5],
+        openings: tempObj[6]
+    };
+
+    jobs.push(job);
+}
 
 // go to the login page
 casper.start('https://jobmine.ccol.uwaterloo.ca/psp/SS/?cmd=login', function() {
     // TODO: currently a really bad way to set the password, will improve later
     this.wait(1000);
 
-    username = fs.read("username").trim();
+    username = fs.read("username.hidden").trim();
 
     keychain.getPassword({
         account: username,
@@ -39,7 +59,6 @@ casper.then(function() {
 
 casper.then(function() {
     // ready to go to descriptions
-    var jobs = JSON.parse(fs.read("jobs.json"));
     this.log("Processing " + jobs.length + " jobs", "info");
 
     async.eachSeries(jobs, function(job, callback) {
