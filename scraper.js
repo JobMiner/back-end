@@ -4,6 +4,8 @@ var casper = require('casper').create({
     verbose: true
 });
 var keychain = require("keychain");
+var fs = require("fs");
+var async = require("async");
 
 var username = "hjaveed";
 var password;
@@ -35,6 +37,22 @@ casper.then(function() {
 
 casper.then(function() {
     // ready to go to descriptions
+    var jobs = JSON.parse(fs.read("jobs.json"));
+    this.log("Processing " + jobs.length + " jobs", "info");
+
+    async.eachSeries(jobs, function(job, callback) {
+        casper.log("Processing " + job.id, "info");
+
+        casper.open("https://jobmine.ccol.uwaterloo.ca/psp/SS_1/EMPLOYEE/WORK/c/UW_CO_STUDENTS.UW_CO_JOBDTLS.GBL?&UW_CO_JOB_ID=" + job.id);
+
+        casper.then(function() {
+            // TODO: process job
+
+            callback();
+        });
+    }, function(err) {
+        casper.log("Finished processing all jobs", "info");
+    });
 });
 
 casper.run();

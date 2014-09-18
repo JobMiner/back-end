@@ -3,7 +3,8 @@
     "version": "0.0.0",
     "description": "A JobMine enhancement tool",
     "dependencies": {
-        "keychain": "latest"
+        "keychain": "latest",
+        "async": "latest"
     },
     "repository": {
         "type": "git",
